@@ -4,7 +4,7 @@
     padding: 0;
 }
 
-body{
+body {
     height: 100%;
 }
 
@@ -76,4 +76,66 @@ header {
 
 #title {
     font-size: x-large;
+}
+
+#speciesInfo {
+    color: white;
+    background-color: rgba(211, 211, 211, 0.322);
+    border-radius: 10px;
+    margin: 10px;
+    padding: 2px;
+}
+
+#speciesInfo h2 {
+    font-size: small;
+    margin: 0 5px 2px 10px;
+}
+
+#speciesInfo p {
+    margin: 0 5px 5px 5px;
+    font-size: small;
+    text-align: justify;
+    border: 1px solid rgb(100, 100, 100);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+#speciesSize {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    justify-content: space-around;
+}
+
+#speciesSize p {
+    text-align: center;
+}
+
+#evolutionChain {
+    color: white;
+    background-color: rgba(211, 211, 211, 0.322);
+    border-radius: 10px;
+    margin: 10px;
+    padding: 2px;
+}
+
+#evolutionChain div {
+    width: 100%;
+    display: grid;
+    justify-content: space-around;
+}
+
+#evolutionChain.evolucao2 div {
+    grid-template-columns: 96px 96px 96px;
+}
+
+#evolutionChain.evolucao1 div {
+    grid-template-columns: 96px 96px;
+}
+
+#evolutionChain.evolucao0 div {
+    grid-template-columns: 96px;
+}
+
+#evolutionChain div div {
+    border: 1px solid black;
 }

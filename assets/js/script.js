@@ -24,8 +24,8 @@ const backColor = {
 
 async function fetchPokemon(i) {
     try {
-        const response = await fetch(url + i);
-        const json = await response.json();
+        const response = await fetch(url + i)
+        const json = await response.json()
         var pokeName = json.name
         var pokeId = json.id.toString()
         var pokeType = []
@@ -61,19 +61,19 @@ async function fetchPokemon(i) {
             </div>
             <img src="${json.sprites.front_default}" alt="">
             </div>
-        `;
+        `
     } catch (error) {
-        console.error(error);
+        console.error(error)
     }
 }
 
 async function fetchAllPokemon() {
     for (let i = 1; i <= 151; i++) {
-        await fetchPokemon(i);
+        await fetchPokemon(i)
     }
 }
 
-fetchAllPokemon();
+fetchAllPokemon()
 
 
 //Pokemon-page scripts
