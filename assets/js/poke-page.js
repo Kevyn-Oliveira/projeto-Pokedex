@@ -1,6 +1,11 @@
-const url = "https://pokeapi.co/api/v2/pokemon/"
-let divContainer = document.getElementById("container")
-divContainer.innerHTML = ""
+const parametros = new URLSearchParams(window.location.search)
+const pokeName = parametros.get('pokeName')
+const pokeId = parametros.get('pokeId')
+const url = `https://pokeapi.co/api/v2/pokemon/${pokeName}`
+const divContainer = document.getElementById("container")
+let pokeType = []
+console.log(pokeName)
+
 const backColor = {
     normal: '#A8A77A',
     fire: '#EE8130',
@@ -22,13 +27,14 @@ const backColor = {
     fairy: '#D685AD',
 }
 
-async function fetchPokemon(i) {
+document.title = pokeName
+
+fetchPokemon()
+
+async function fetchPokemon() {
     try {
-        const response = await fetch(url + i);
+        const response = await fetch(url);
         const json = await response.json();
-        var pokeName = json.name
-        var pokeId = json.id.toString()
-        var pokeType = []
         var pokeTypeHTML = ""
         if (json.types[1] == null) {
             pokeType = [json.types[0].type.name, json.types[0].type.name]
@@ -48,36 +54,23 @@ async function fetchPokemon(i) {
             `
         }
 
-        console.log(pokeType)
         divContainer.innerHTML += `
-            <div class="pokeSpace" 
-                data-poke-name="${pokeName}" data-poke-id="${pokeId}" data-poke-type1="${pokeType[0]}" data-poke-type2="${pokeType[1]}" 
-                style="background: linear-gradient(to bottom right, ${backColor[pokeType[0]]}, ${backColor[pokeType[1]]})"
-                onclick="coletaDadosDoPokemon(this.dataset)">
-            <div class="infoDiv">
-                <p>#${pokeId.padStart(3, 0)}</p>
-                <p>${pokeName.charAt(0).toUpperCase() + pokeName.slice(1)}</p>
-                ${pokeTypeHTML}
-            </div>
+            <div class="pokeSpace pokeInfo" style="background-color: rgba(211, 211, 211, 0.151);">
+                <div class="infoDiv">
+                    <p>#${pokeId.padStart(3, 0)}</p>
+                    <p>${pokeName.charAt(0).toUpperCase() + pokeName.slice(1)}</p>
+                    ${pokeTypeHTML}
+                </div>
             <img src="${json.sprites.front_default}" alt="">
             </div>
         `;
+
+        const body = document.body
+        body.style.background = `linear-gradient(to bottom right, ${backColor[pokeType[0]]}, ${backColor[pokeType[1]]})`
+        body.style.height = '100vh';
+        body.style.margin = '0';
+        body.style.overflow = 'hidden';
     } catch (error) {
         console.error(error);
     }
-}
-
-async function fetchAllPokemon() {
-    for (let i = 1; i <= 151; i++) {
-        await fetchPokemon(i);
-    }
-}
-
-fetchAllPokemon();
-
-
-//Pokemon-page scripts
-
-function coletaDadosDoPokemon(pokemon) {
-    window.location.href = `./pokemon-page.html?pokeName=${pokemon.pokeName}&pokeId=${pokemon.pokeId}`
 }
