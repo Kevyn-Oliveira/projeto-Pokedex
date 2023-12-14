@@ -65,7 +65,7 @@ async function fetchPokemon(i) {
 }
 
 async function fetchAllPokemon() {
-    for (let i = 1; i <= 151; i++) {
+    for (let i = 0; i <= 151; i++) {
         await fetchPokemon(i);
     }
 }

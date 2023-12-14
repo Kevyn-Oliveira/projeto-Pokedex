@@ -17,6 +17,11 @@
     border: 1px solid rgb(100, 100, 100);
 }
 
+.pokeSpace:hover {
+    margin: 1px;
+    padding: 2px;
+}
+
 .pokeSpace div {
     padding-top: 10px;
 }
