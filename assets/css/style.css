@@ -1,18 +1,27 @@
+/*Configurações padrões*/
 * {
     font-family: 'Roboto';
     margin: 0;
     padding: 0;
 }
-
 body {
     height: 100%;
 }
-
 #wrapper {
     width: 100%;
     height: 100%;
 }
 
+/*Configuracoes do header*/
+header {
+    padding: 10px;
+    text-align: center;
+}
+#title {
+    font-size: x-large;
+}
+
+/*Tag do pokemon com nome e tipos*/
 .pokeSpace {
     display: grid;
     grid-template-columns: auto 100px;
@@ -21,28 +30,23 @@ body {
     overflow: hidden;
     border: 1px solid rgb(100, 100, 100);
 }
-
 .pokeSpace:hover {
     margin: 1px;
     padding: 2px;
 }
-
 .pokeInfo:hover {
     margin: 5px;
     padding: 0;
 }
-
 .pokeSpace div {
     padding-top: 10px;
 }
-
 .pokeSpace p {
     display: inline;
     margin-left: 10px;
     color: white;
     font-size: 25px;
 }
-
 .typeDiv {
     display: grid;
     color: white;
@@ -50,7 +54,6 @@ body {
     justify-content: space-around;
     margin-bottom: 10px;
 }
-
 .typeDiv p {
     background-color: rgba(211, 211, 211, 0.151);
     border: 1px solid rgb(100, 100, 100);
@@ -59,7 +62,6 @@ body {
     padding: 5px 20px;
     border-radius: 10px;
 }
-
 .pokeSpace img {
     padding-left: 10px;
     border: 1px solid rgb(100, 100, 100);
@@ -69,15 +71,7 @@ body {
     height: auto;
 }
 
-header {
-    padding: 10px;
-    text-align: center;
-}
-
-#title {
-    font-size: x-large;
-}
-
+/*Configuracoes da descricao do pokemon*/
 #speciesInfo {
     color: white;
     background-color: rgba(211, 211, 211, 0.322);
@@ -85,12 +79,10 @@ header {
     margin: 10px;
     padding: 2px;
 }
-
-#speciesInfo h2 {
+h2 {
     font-size: small;
     margin: 0 5px 2px 10px;
 }
-
 #speciesInfo p {
     margin: 0 5px 5px 5px;
     font-size: small;
@@ -99,43 +91,68 @@ header {
     border-radius: 10px;
     padding: 10px;
 }
-
 #speciesSize {
     display: grid;
     grid-template-columns: 50% 50%;
     justify-content: space-around;
 }
-
 #speciesSize p {
     text-align: center;
 }
 
+/*Configuracoes das habilidades*/
+#divAbilities {
+    color: white;
+    background-color: rgba(211, 211, 211, 0.322);
+    border-radius: 10px;
+    margin: 10px;
+    padding: 10px;
+}
+#divAbilities div {
+    justify-content: space-around;
+    display: flex;
+}
+#divAbilities div p{
+    border: 1px solid rgb(100, 100, 100);
+    border-radius: 10px;
+    text-align: center;
+    padding: 2px;
+    margin: 3px;
+}
+#normalAbility.dualAbility p {
+    width: 40%;
+    background-color: rgba(211, 211, 211, 0.322);
+}
+#normalAbility.singleAbility p {
+    width: 90%;
+    background-color: rgba(211, 211, 211, 0.322);
+}
+#hiddenAbility {
+    margin: auto;
+    border: 1px solid rgb(100, 100, 100);
+    border-radius: 10px;
+    width: 90%;
+    background-color: rgba(105, 105, 105, 0.158);
+    overflow: hidden;
+}
+
+/*Configuracoes das evolucoes*/
 #evolutionChain {
     color: white;
     background-color: rgba(211, 211, 211, 0.322);
     border-radius: 10px;
     margin: 10px;
-    padding: 2px;
+    padding: 10px;
 }
-
-#evolutionChain div {
-    width: 100%;
-    display: grid;
+#evolutionCards {
+    display: flex;
     justify-content: space-around;
 }
-
-#evolutionChain.evolucao2 div {
-    grid-template-columns: 96px 96px 96px;
-}
-
-#evolutionChain.evolucao1 div {
-    grid-template-columns: 96px 96px;
-}
-
-#evolutionChain.evolucao0 div {
-    grid-template-columns: 96px;
-}
-
-#evolutionChain div div {
-    border: 1px solid black;
+.evolutions{
+    justify-content: space-around;
+    text-align: center;
+    border: 1px solid rgb(100, 100, 100);
+    border-radius: 10px;
+    padding: 5px;
+    width: 100px;
 }

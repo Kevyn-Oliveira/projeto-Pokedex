@@ -3,9 +3,6 @@ const pokeName = parametros.get('pokeName')
 const pokeId = parametros.get('pokeId')
 const divContainer = document.getElementById("container")
 const divSpeciesInfo = document.getElementById("speciesInfo")
-const divEvolutionChain = document.getElementById("evolutionChain")
-let pokeType = []
-
 const backColor = {
     normal: '#A8A77A',
     fire: '#EE8130',
@@ -27,6 +24,8 @@ const backColor = {
     fairy: '#D685AD',
 }
 
+let pokeType = []
+
 document.title = pokeName
 
 renderTela()
@@ -35,21 +34,87 @@ async function renderTela() {
     const pokemonBasicInfo = await fetchInfos(`https://pokeapi.co/api/v2/pokemon/${pokeId}`)
     const pokemonSpeciesInfo = await fetchInfos(`https://pokeapi.co/api/v2/pokemon-species/${pokeId}`)
     const pokemonChainEvoInfo = await fetchInfos(pokemonSpeciesInfo.evolution_chain.url)
-    let typeTagHTML = ""
     const typesColor = pokemonBasicInfo.types[1] == undefined ? [backColor[pokemonBasicInfo.types[0].type.name], backColor[pokemonBasicInfo.types[0].type.name]] :
         [backColor[pokemonBasicInfo.types[0].type.name], backColor[pokemonBasicInfo.types[1].type.name]]
+    
+    let typeTagHTML = ""
+    let evolutionChart = ""
+    let abilitiesChart = ""
+    
     if (typesColor[0] == typesColor[1]) {
         typeTagHTML = `
             <div class="typeDiv" style="grid-template-columns: 100%;"><p>${pokemonBasicInfo.types[0].type.name}</p></div>
         `
-    }
-    else {
+    } else {
         typeTagHTML = `
         <div class="typeDiv" style="grid-template-columns: 50% 50%;">
             <p>${pokemonBasicInfo.types[0].type.name}</p>
             <p>${pokemonBasicInfo.types[1].type.name}</p>
-        </div>
+        </div>`
+    }
+
+    if (pokemonBasicInfo.abilities.length == 3){
+        abilitiesChart = `
+            <div id="normalAbility" class="dualAbility">
+                <p>${pokemonBasicInfo.abilities[0].ability.name}</p>
+                <p>${pokemonBasicInfo.abilities[1].ability.name}</p>
+            </div>
+            <div id="hiddenAbility">
+                <p>${pokemonBasicInfo.abilities[2].ability.name}</p>
+            </div>
         `
+    } else {
+        abilitiesChart = `
+            <div id="normalAbility" class="singleAbility">
+                <p>${pokemonBasicInfo.abilities[0].ability.name}</p>
+            </div>
+            <div id="hiddenAbility">
+                <p style="border:none">Hidden: ${pokemonBasicInfo.abilities[1].ability.name}</p>
+            </div>
+        `
+    }
+
+    if (pokemonChainEvoInfo.chain.evolves_to[0] != null) {
+        if (pokemonChainEvoInfo.chain.evolves_to[0].evolves_to[0] != null) {
+            evolutionChart = `
+                <div class="evolutions">
+                    <p>${pokemonChainEvoInfo.chain.species.name}</p>
+                    <img src="${await returnPokemonSprite(pokemonChainEvoInfo.chain.species.name)}">
+                </div>
+                <div class="evolutions">
+                    <p>
+                        ${(pokemonChainEvoInfo.chain.evolves_to[0].species.name).charAt(0).toUpperCase() + 
+                        pokemonChainEvoInfo.chain.evolves_to[0].species.name.slice(1)}
+                    </p>
+                    <img src="${await returnPokemonSprite(pokemonChainEvoInfo.chain.evolves_to[0].species.name)}">
+                </div>
+                <div class="evolutions">
+                    <p>
+                        ${(pokemonChainEvoInfo.chain.evolves_to[0].evolves_to[0].species.name).charAt(0).toUpperCase() + 
+                        pokemonChainEvoInfo.chain.evolves_to[0].evolves_to[0].species.name.slice(1)}
+                    </p>
+                    <img src="${await returnPokemonSprite(pokemonChainEvoInfo.chain.evolves_to[0].evolves_to[0].species.name)}">
+                </div>`
+        } else {
+            evolutionChart = `
+            <div class="evolutions">
+                <p>${pokemonChainEvoInfo.chain.species.name}</p>
+                <img src="${await returnPokemonSprite(pokemonChainEvoInfo.chain.species.name)}">
+            </div>
+            <div class="evolutions">
+                <p>
+                    ${(pokemonChainEvoInfo.chain.evolves_to[0].species.name).charAt(0).toUpperCase() + 
+                    pokemonChainEvoInfo.chain.evolves_to[0].species.name.slice(1)}
+                </p>
+                <img src="${await returnPokemonSprite(pokemonChainEvoInfo.chain.evolves_to[0].species.name)}">
+            </div>`
+        }
+    } else {
+        evolutionChart = `
+        <div class="evolutions">
+            <p>${pokemonChainEvoInfo.chain.species.name}</p>
+            <img src="${await returnPokemonSprite(pokemonChainEvoInfo.chain.species.name)}">
+        </div>`
     }
 
 
@@ -58,11 +123,32 @@ async function renderTela() {
             <div class="infoDiv">
                 <p>#${pokeId.padStart(3, 0)}</p>
                 <p>${pokeName.charAt(0).toUpperCase() + pokeName.slice(1)}</p>
+                ${typeTagHTML}
             </div>
-            ${typeTagHTML}
         <img src="${pokemonBasicInfo.sprites.front_default}" alt="">
         </div>
+
+        <div id="speciesInfo">
+            <h2>Descrição</h2>
+            <p>${pokemonSpeciesInfo.flavor_text_entries[1].flavor_text}</p>
+            <div id="speciesSize">
+                <p>Height: ${correctSize(pokemonBasicInfo.height)}</p>
+                <p>Weight: ${correctWeight(pokemonBasicInfo.weight)}</p>
+            </div>
+        </div>
+
+        <div id="divAbilities">
+            <h2>Habilidades</h2>
+            ${abilitiesChart}
+        </div>
+
+        <div id="evolutionChain">
+            <h2>Evoluções</h2>
+            <div id="evolutionCards">${evolutionChart}</div>
+        </div>
     `
+
+
 
     configurarTela(typesColor)
     console.log(pokemonBasicInfo, pokemonSpeciesInfo, pokemonChainEvoInfo)
@@ -74,103 +160,6 @@ function configurarTela(typesColor) {
     body.style.height = '100vh'
     body.style.margin = '0'
     body.style.overflow = 'hidden'
-}
-
-async function fetchPokemon() {
-    try {
-        const response = await fetch(url)
-        const json = await response.json()
-        if (json.types[1] == null) {
-            pokeType = [json.types[0].type.name, json.types[0].type.name]
-            pokeTypeHTML = `
-                <div class="typeDiv" style="
-                grid-template-columns: 100%;">
-                <p>${pokeType[0]}</p>
-                </div>
-            `
-        } else {
-            pokeType = [json.types[0].type.name, json.types[1].type.name]
-            pokeTypeHTML = `
-                <div class="typeDiv" style="
-                grid-template-columns: 50% 50%;">
-                    <p>${pokeType[0]}</p> <p>${pokeType[1]}</p>
-                </div>
-            `
-        }
-
-
-        await fetchSpecies()
-
-        const divSpecieSize = document.getElementById("speciesSize")
-        divSpecieSize.innerHTML += `
-            <p>Height: ${correctSize(json.height)}</p>
-            <p>Weight: ${correctWeight(json.weight)}</p>
-        `
-        const pokemonEvolutionChain = await fetchEvolutionChain(await returnEvolutionChain())
-
-
-        if (pokemonEvolutionChain.chain.evolves_to.length != 0) {
-            if (pokemonEvolutionChain.chain.evolves_to[0].evolves_to.length == 0) {
-                divEvolutionChain.classList.add("evolucao1")
-            }
-            else {
-                divEvolutionChain.classList.add("evolucao2")
-            }
-        }
-        else {
-            divEvolutionChain.classList.add("evolucao0")
-        }
-
-        divEvolutionChain.innerHTML += `
-            <div>
-            <div>
-                <p>${pokemonEvolutionChain.chain.species.name}</p>
-            </div>
-            <div><p>${pokemonEvolutionChain.chain.species.name}</p></div>
-            <div><p>${pokemonEvolutionChain.chain.species.name}</p></div></div>
-        `
-
-        const body = document.body
-        body.style.background = `linear-gradient(to bottom right, ${backColor[pokeType[0]]}, ${backColor[pokeType[1]]})`
-        body.style.height = '100vh'
-        body.style.margin = '0'
-        body.style.overflow = 'hidden'
-    } catch (error) {
-        console.error(error)
-    }
-}
-
-async function fetchSpecies() {
-    try {
-        const response = await fetch(urlSpecies)
-        const json = await response.json()
-
-        divSpeciesInfo.innerHTML += `
-            <h2>Descrição</h2>
-            <p>${json.flavor_text_entries[17].flavor_text}</p>
-            <div id="speciesSize"></div>
-        `
-    }
-    catch (error) {
-        console.error(error)
-    }
-}
-
-async function fetchEvolutionChain(urlChain) {
-    try {
-        const response = await fetch(urlChain)
-        const json = await response.json()
-        return json
-    }
-    catch (error) {
-        console.error(error)
-    }
-}
-
-async function returnEvolutionChain() {
-    const response = await fetch(urlSpecies)
-    const json = await response.json()
-    return json.evolution_chain.url
 }
 
 function correctSize(height) {
@@ -191,4 +180,11 @@ async function fetchInfos(url) {
     const response = await fetch(url)
     const json = await response.json()
     return json
+}
+
+async function returnPokemonSprite(pokemon) {
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`)
+    const json = await response.json()
+    console.log(json.sprites.front_default)
+    return json.sprites.front_default
 }
